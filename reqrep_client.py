@@ -2,7 +2,7 @@ import zmq
 
 
 class REQ:
-    def __init__(self, addr, port, data=None):
+    def __init__(self, addr, port, data):
         self.addr = addr
         self.port = port
         self.data = data
@@ -19,7 +19,7 @@ class REQ:
     
     def receive(self):
         if self.socket is not None:
-            self.socket.recv_pyobj()
+            return self.socket.recv_pyobj()
 
 req = REQ(addr='192.168.11.1', port=5555, data={'message': 'from laptop'})
 
@@ -29,4 +29,4 @@ while True:
     req.send()
 
     message = req.receive()
-    # print(message)
+    print(message)

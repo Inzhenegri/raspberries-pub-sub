@@ -1,10 +1,28 @@
 import zmq
 
 
-socket = zmq.Context().socket(socket_type=zmq.REP)
-socket.bind(addr='tcp://*:5555')
+class REP:
+    def __init__(self, port, data):
+        self.port = port
+        self.data = data
+        self.socket = None
+
+    def bind(self):
+        self.socket = zmq.Context().socket(socket_type=zmq.REP)
+        self.socket.bind(addr=f'tcp://*:{self.port}')
+
+    def receive(self):
+        return self.socket.recv_pyobj()
+
+    def send(self):
+        self.socket.send_pyobj(obj=self.data)
+        
+
+rep = REP(port=5555, data={'message': 'from raspberry'})
+rep.bind()
 
 while True:
-    message = socket.recv_pyobj()
-    print(message)
-    socket.send_pyobj(obj={'message': 'from raspberry'})
+    data = rep.receive()
+    print(data)
+
+    rep.send()
